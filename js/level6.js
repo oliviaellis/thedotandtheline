@@ -3,8 +3,11 @@ var level6 = function(game){
   snakePath = new Array(); //arrary of positions(points) that have to be stored for the path the sections follow
   numSnakeSections = 30; //number of snake body sections
   snakeSpacer = 4; //parameter that sets the spacing between sections
+  squiggleScale = 4;
   this.score = 0;
   this.scoreText = null;
+  var seed = Date.now();
+  this.random = new Phaser.RandomDataGenerator([seed]);
 }
 
 level6.prototype = {
@@ -17,14 +20,22 @@ level6.prototype = {
 
       // Create squiggle
       squiggle = this.game.add.sprite(100, 100, 'squiggle');
+      this.game.physics.enable(squiggle);
       squiggle.frame = 3;
+      squiggle.scale.setTo(4);
       squiggle.animations.add('wiggle', [0, 1, 2, 3, 4], 10, true);
       squiggle.animations.play('wiggle');
+      squiggle.body.collideWorldBounds = true;
+
+      var x = this.random.integerInRange(-300, 300);
+      squiggle.body.velocity.setTo(x, x);
+      squiggle.body.bounce.set(0.8);
 
       // Configure snake
       snakeHead = this.game.add.sprite(400, 300, 'line-segment');
       snakeHead.anchor.setTo(0.5, 0.5);
       this.game.physics.enable(snakeHead);
+      snakeHead.body.collideWorldBounds = true;
 
       //  Init snakeSection array
       for (var i = 1; i <= numSnakeSections-1; i++)
@@ -51,9 +62,6 @@ level6.prototype = {
       // Set up audio
       this.track = this.game.add.audio('level6', 1, false);
       this.track.play();
-      this.game.input.onDown.addOnce(() => {
-       this.game.sound.context.resume();
-      });
     },
 
     updateScore: function() {
@@ -61,8 +69,14 @@ level6.prototype = {
     },
 
     isColliding: function(a, b) {
+      var x = this.random.integerInRange(0, 800);
+      var y = this.random.integerInRange(0, 600);
+      squiggle.x = x;
+      squiggle.y = y;
       this.score++;
       this.updateScore();
+      squiggleScale--;
+      squiggle.scale.setTo(squiggleScale);
     },
 
     update: function () {
@@ -101,13 +115,17 @@ level6.prototype = {
           snakeHead.body.angularVelocity = 300;
       }
 
-    },
+      if (squiggleScale === 0) {
+        squiggle.kill();
+      }
 
-    render: function () {
     },
 
     nextLevel: function(){
       this.track.stop();
       this.game.state.start("win");
-    }
+    },
+
+    render: function () {
+    },
   }

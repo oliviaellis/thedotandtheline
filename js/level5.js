@@ -20,6 +20,9 @@ level5.prototype = {
     snakeHead = this.game.add.sprite(400, 300, 'line-segment');
     snakeHead.anchor.setTo(0.5, 0.5);
     this.game.physics.enable(snakeHead);
+    snakeHead.body.collideWorldBounds = true;
+
+
 
     //  Init snakeSection array
     for (var i = 1; i <= numSnakeSections-1; i++)
@@ -41,9 +44,6 @@ level5.prototype = {
     // Set up audio
     this.track = this.game.add.audio('level5', 1, false);
     this.track.play();
-    this.game.input.onDown.addOnce(() => {
-     this.game.sound.context.resume();
-    });
 
     this.score = 0;
     var style = {

@@ -17,8 +17,8 @@ level2.prototype = {
       this.player.enableBody = true;
 
     // create Line sprite
-      line1.body.setSize(5, 300);
-      line2.body.setSize(5, 300);
+      line1.body.setSize(20, 300);
+      line2.body.setSize(20, 300);
 
       this.score = 0;
       var style = {
@@ -37,6 +37,7 @@ level2.prototype = {
     // Configure enemies
       this.enemies = this.game.add.group();
       this.enemies.enableBody = true;
+      this.enemies.body.setSize(25, 25);
       this.initEnemies();
       this.timer = this.game.time.events.loop(500, this.addEnemy, this);
 
@@ -72,7 +73,6 @@ level2.prototype = {
           var y = this.random.integerInRange(10, this.game.world.height - 10);
           enemy.reset(800, y);
           enemy.body.velocity.x = this.random.integerInRange(-200, -500);
-          enemy.body.setSize(1, 1);
           this.score++;
           this.updateScore();
         // Kill enemies when they exit screen

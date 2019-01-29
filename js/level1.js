@@ -3,7 +3,6 @@ var level1 = function(game){
   this.scoreText = null;
 }
 
-
 level1.prototype = {
 
     create: function () {
@@ -11,10 +10,11 @@ level1.prototype = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.world.setBounds(0, 0, 800, 600);
 
+      // Background and animation
         this.game.stage.backgroundColor = '#FFFFFF';
         bg = this.game.add.sprite(0,0, 'background');
         this.game.add.tween(bg).to({alpha: 0}, 1000, "Linear", true);
-
+      // create Dot sprite
         dot = this.game.add.sprite(this.game.width/2, this.game.height/2, 'dot');
         dot.anchor.setTo(0.5, 0.5);
         this.game.physics.arcade.enable(dot);
@@ -25,9 +25,10 @@ level1.prototype = {
         line2 = this.game.add.sprite(100, 300, 'line2');
         this.game.physics.arcade.enable(line1);
         this.game.physics.arcade.enable(line2);
-        line1.body.setSize(5, 300);
-        line2.body.setSize(5, 300);
+        line1.body.setSize(20, 300);
+        line2.body.setSize(20, 300);
 
+      // Set up score
         this.score = 0;
         var style = {
           font: "16px Arial",
@@ -74,6 +75,7 @@ level1.prototype = {
             var sprite = this.enemies.create(800, 100, 'balls', null, false);
             this.game.physics.arcade.enable(sprite);
             sprite.enableBody = true;
+            sprite.body.setSize(25, 25);
             sprite.body.velocity.x = -300;
         }
     },
@@ -87,7 +89,6 @@ level1.prototype = {
             var y = this.random.integerInRange(10, this.game.world.height - 10);
             enemy.reset(800, y);
             enemy.body.velocity.x = this.random.integerInRange(-200, -500);
-            enemy.body.setSize(1, 1);
             this.score++;
             this.updateScore();
           // Kill enemies when they exit screen
