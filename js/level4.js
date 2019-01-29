@@ -1,82 +1,150 @@
-// Snake by Patrick OReilly and Richard Davey
-// Twitter: @pato_reilly Web: http://patricko.byethost9.com
 var level4 = function(game){
+  this.cursors = null;
+  this.currentMovement = 2;
+  this.player = null;
+  this.point = null;
+  this.speed = 4;
+  this.score = 0;
+  this.scoreText = null;
+  this.movement = {
+    'UP' : 1,
+    'RIGHT' : 2,
+    'DOWN' : 4,
+    'LEFT' : 8,
+  }
 }
-
-var snakeHead; //head of snake sprite
-var snakeSection = new Array(); //array of sprites that make the snake body sections
-var snakePath = new Array(); //arrary of positions(points) that have to be stored for the path the sections follow
-var numSnakeSections = 20; //number of snake body sections
-var snakeSpacer = 6; //parameter that sets the spacing between sections
 
 level4.prototype = {
 
   create: function () {
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    this.game.world.setBounds(0, 0, 800, 600);
-    this.game.stage.backgroundColor = '#124184';
-    cursors = this.game.input.keyboard.createCursorKeys();
-    snakeHead = this.game.add.sprite(400, 300, 'balls');
-    snakeHead.anchor.setTo(0.5, 0.5);
-    this.game.physics.enable(snakeHead, Phaser.Physics.ARCADE);
+    this.cursors = this.game.input.keyboard.createCursorKeys();
     var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
     wkey.onDown.addOnce(this.nextLevel, this);
-
-    //  Init snakeSection array
-    for (var i = 1; i <= numSnakeSections-1; i++)
-    {
-      snakeSection[i] = this.game.add.sprite(400, 300, 'balls');
-      snakeSection[i].anchor.setTo(0.5, 0.5);
+    this.point = null;
+    this.addPoint();
+    this.player = [];
+    this.game.stage.backgroundColor = '#FFFFFF';
+    for(var i = 0; i < 4; i++) {
+      this.increaseLength();
     }
-
-    //  Init snakePath array
-    for (var i = 0; i <= numSnakeSections * snakeSpacer; i++)
-    {
-      snakePath[i] = new Phaser.Point(400, 300);
-    }
-
+    this.score = 0;
+    var style = {
+      font: "16px Arial",
+      fill: "#000",
+      align: "center"
+    };
+    this.scoreText = this.game.add.text(10, 10, '', style);
+    this.updateScore();
   },
 
-  update: function () {
+  addPoint: function() {
+    var widthPoints = this.game.width/16;
+    var heightPoints = this.game.height/16;
+    var x = Math.round(Math.random()*(widthPoints-1))*16;
+    var y = Math.round(Math.random()*(heightPoints-1))*16;
+    if(!this.point) {
+      this.point = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'balls')
+    }
+    this.game.physics.enable(this.point);
+    this.point.body.setSize(25, 25);
+    this.point.x = x;
+    this.point.y = y;
+  },
 
-    snakeHead.body.velocity.setTo(0, 0);
-    snakeHead.body.angularVelocity = 0;
+  increaseLength: function() {
+    var x = 160;
+    var y = 160;
+    if(this.player.length != 0) {
+      x = this.player[this.player.length-1].x + 20;
+      y = this.player[this.player.length-1].y + 20;
+    }
+    var segment = this.game.add.sprite(x, y, 'line-segment');
+    this.game.physics.arcade.enable(segment);
+    segment.anchor.setTo(0.5, 0.5);
 
-    if (cursors.up.isDown)
-    {
-      snakeHead.body.velocity.copyFrom(this.game.physics.arcade.velocityFromAngle(snakeHead.angle, 300));
 
-      // Everytime the snake head moves, insert the new location at the start of the array,
-      // and knock the last position off the end
+    this.player.push(segment);
 
-      var part = snakePath.pop();
+    this.player[0].body.collideWorldBounds = true;
+    this.player[0].body.setSize(25, 25);
+  },
 
-      part.setTo(snakeHead.x, snakeHead.y);
-
-      snakePath.unshift(part);
-
-      for (var i = 1; i <= numSnakeSections - 1; i++)
-      {
-        snakeSection[i].x = (snakePath[i * snakeSpacer]).x;
-        snakeSection[i].y = (snakePath[i * snakeSpacer]).y;
+  updateMovementPosition: function() {
+    if (this.cursors.up.isDown) {
+      if(this.currentMovement != this.movement.DOWN) {
+        this.currentMovement = this.movement.UP;
       }
     }
 
-    if (cursors.left.isDown)
-    {
-      snakeHead.body.angularVelocity = -300;
+    if (this.cursors.right.isDown) {
+      if(this.currentMovement != this.movement.LEFT) {
+        this.currentMovement = this.movement.RIGHT;
+      }
     }
-    else if (cursors.right.isDown)
-    {
-      snakeHead.body.angularVelocity = 300;
+
+    if (this.cursors.down.isDown) {
+      if(this.currentMovement != this.movement.UP) {
+        this.currentMovement = this.movement.DOWN;
+      }
+    }
+
+    if (this.cursors.left.isDown){
+      if(this.currentMovement != this.movement.RIGHT) {
+        this.currentMovement = this.movement.LEFT;
+      }
+    }
+  },
+
+  isColliding: function(a, b) {
+    this.increaseLength();
+    this.addPoint();
+    this.score++;
+    this.updateScore();
+  },
+
+  updateScore: function() {
+    this.scoreText.setText('SCORE: ' + this.score);
+  },
+
+  update: function () {
+    this.updateMovementPosition();
+
+    this.game.physics.arcade.overlap(this.player[0], this.point, this.isColliding, null, this);
+
+    var oldX, oldY;
+    for(var i = 0; i < this.player.length; i++) {
+      var x = this.player[i].x;
+      var y = this.player[i].y;
+      if(i != 0) {
+        this.player[i].x = oldX;
+        this.player[i].y = oldY;
+      }
+
+      oldX = x;
+      oldY = y;
+    }
+
+    switch(this.currentMovement) {
+      case this.movement.UP:
+        this.player[0].y -= this.speed;
+      break;
+      case this.movement.RIGHT:
+        this.player[0].x += this.speed;
+      break;
+      case this.movement.DOWN:
+        this.player[0].y += this.speed;
+      break;
+      case this.movement.LEFT:
+        this.player[0].x -= this.speed;
+      break;
     }
   },
 
   render: function () {
-    this.game.debug.spriteInfo(snakeHead, 32, 32);
   },
 
   nextLevel: function(){
+    // this.track.stop();
     this.game.state.start("level5");
   }
 }

@@ -1,5 +1,8 @@
 var level1 = function(game){
+  this.score = 0;
+  this.scoreText = null;
 }
+
 
 level1.prototype = {
 
@@ -7,13 +10,32 @@ level1.prototype = {
       // initialize physics engine and stage
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.world.setBounds(0, 0, 800, 600);
+
         this.game.stage.backgroundColor = '#FFFFFF';
+        bg = this.game.add.sprite(0,0, 'background');
+        this.game.add.tween(bg).to({alpha: 0}, 1000, "Linear", true);
+
+        dot = this.game.add.sprite(this.game.width/2, this.game.height/2, 'dot');
+        dot.anchor.setTo(0.5, 0.5);
+        this.game.physics.arcade.enable(dot);
+        this.game.time.events.add(Phaser.Timer.SECOND, this.startAnimation, this);
 
       // create Line sprite
         line1 = this.game.add.sprite(100, 0, 'line1');
         line2 = this.game.add.sprite(100, 300, 'line2');
         this.game.physics.arcade.enable(line1);
         this.game.physics.arcade.enable(line2);
+        line1.body.setSize(5, 300);
+        line2.body.setSize(5, 300);
+
+        this.score = 0;
+        var style = {
+          font: "16px Arial",
+          fill: "#000",
+          align: "center"
+        };
+        this.scoreText = this.game.add.text(10, 10, '', style);
+        this.updateScore();
 
       // Manual next stage key
         cursors = this.game.input.keyboard.createCursorKeys();
@@ -29,6 +51,21 @@ level1.prototype = {
       // Set up RNG
         var seed = Date.now();
         this.random = new Phaser.RandomDataGenerator([seed]);
+
+      // Set up audio
+        this.track = this.game.add.audio('level1', 1, false);
+        this.track.play();
+        this.game.input.onDown.addOnce(() => {
+         this.game.sound.context.resume();
+        });
+    },
+
+    startAnimation: function () {
+      this.game.add.tween(dot).to({x: 900}, 2000, Phaser.Easing.Exponential.In, true);
+    },
+
+    updateScore: function() {
+      this.scoreText.setText('SCORE: ' + this.score);
     },
 
     initEnemies: function(){
@@ -50,11 +87,19 @@ level1.prototype = {
             var y = this.random.integerInRange(10, this.game.world.height - 10);
             enemy.reset(800, y);
             enemy.body.velocity.x = this.random.integerInRange(-200, -500);
+            enemy.body.setSize(1, 1);
+            this.score++;
+            this.updateScore();
           // Kill enemies when they exit screen
             enemy.checkWorldBounds = true;
             enemy.outOfBoundsKill = true;
         }
 
+    },
+
+    damageLine: function () {
+      this.score--;
+      this.updateScore();
     },
 
     update: function () {
@@ -82,12 +127,9 @@ level1.prototype = {
         line2.body.velocity.x = 150;
       }
 
-       this.game.physics.arcade.overlap(line1, this.enemies, this.hitHazard);
-       this.game.physics.arcade.overlap(line2, this.enemies, this.hitHazard);
-    },
+      this.game.physics.arcade.overlap(line1, this.enemies, this.damageLine, null, this);
+      this.game.physics.arcade.overlap(line2, this.enemies, this.damageLine, null, this);
 
-    hitHazard: function () {
-      console.log('Hit');
     },
 
     render: function () {
@@ -96,6 +138,7 @@ level1.prototype = {
       },
 
     nextLevel: function(){
+      this.track.stop();
       this.game.state.start("level2");
     }
 }

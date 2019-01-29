@@ -29,6 +29,13 @@ level2.prototype = {
       // Set up RNG
         var seed = Date.now();
         this.random = new Phaser.RandomDataGenerator([seed]);
+
+      // Set up audio
+        this.track = this.game.add.audio('level2', 1, false);
+        this.track.play();
+        this.game.input.onDown.addOnce(() => {
+         this.game.sound.context.resume();
+        });
     },
 
     initEnemies: function(){
@@ -88,6 +95,7 @@ level2.prototype = {
       },
 
     nextLevel: function(){
+      this.track.stop();
       this.game.state.start("level3");
     }
   }

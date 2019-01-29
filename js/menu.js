@@ -1,32 +1,32 @@
-var menuState = {
-  create: function () {
-    var nameLabel = game.add.text(80, 80, 'My First Game');
-
-    var startLabel = game.add.text(80, game.world.height - 80, "press the W key to start");
-
-    var wkey = game.input.keyboard.addKey(Phaser.Keyboard.W);
-
-    wkey.onDown.addOnce(this.start, this);
-  },
-
-  start: function () {
-    game.state.start('level1');
-  }
-};
-
-
-
-
 var menuState = function(game){}
 
 menuState.prototype = {
   create: function () {
-    var nameLabel = this.game.add.text(80, 80, 'My First Game');
-    var startLabel = this.game.add.text(80, this.game.world.height - 80, "press the W key to start");
-    var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-    wkey.onDown.addOnce(this.start, this);
+
+    this.track = this.game.add.audio('intro', 1, true);
+    this.track.play();
+
+    this.game.stage.backgroundColor = '#336cb2';
+
+    this.add.button(this.game.width/2-25, this.game.height/2-25, 'dot', this.startGame, this);
+
+    this.game.input.onDown.addOnce(() => {
+    this.game.sound.context.resume();
+    });
+
+    this.game.time.events.add(Phaser.Timer.SECOND, this.makeText, this);
+
   },
-	start: function(){
+
+  makeText: function() {
+    this.text1 = this.game.add.text(this.game.width / 2, 100, "The Dot and the Line");
+    this.text1.fill = "#EBDE47";
+    this.text1.anchor.set(0.5, 0.5);
+    this.text1.font = "Lora";
+    },
+
+	startGame: function() {
+    this.track.stop();
 		this.game.state.start("level1");
 	}
 }
