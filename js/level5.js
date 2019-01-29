@@ -3,22 +3,23 @@ var level5 = function(game){
   snakePath = new Array(); //arrary of positions(points) that have to be stored for the path the sections follow
   numSnakeSections = 30; //number of snake body sections
   snakeSpacer = 4; //parameter that sets the spacing between sections
-  this.point = null;
+  point = null;
+  this.score = 0;
+  this.scoreText = null;
 }
 
 level5.prototype = {
 
   create: function () {
     // Next level shortcut for development
+    cursors = this.game.input.keyboard.createCursorKeys();
     var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
     wkey.onDown.addOnce(this.nextLevel, this);
 
-    cursors = this.game.input.keyboard.createCursorKeys();
-
+    // Configure snake
     snakeHead = this.game.add.sprite(400, 300, 'line-segment');
     snakeHead.anchor.setTo(0.5, 0.5);
-
-    this.game.physics.enable(snakeHead, Phaser.Physics.ARCADE);
+    this.game.physics.enable(snakeHead);
 
     //  Init snakeSection array
     for (var i = 1; i <= numSnakeSections-1; i++)
@@ -33,60 +34,57 @@ level5.prototype = {
         snakePath[i] = new Phaser.Point(400, 300);
     }
 
-  // Set up audio
+    // Set up points
+    point = null;
+    this.addPoint();
+
+    // Set up audio
     this.track = this.game.add.audio('level5', 1, false);
     this.track.play();
     this.game.input.onDown.addOnce(() => {
      this.game.sound.context.resume();
     });
+
+    this.score = 0;
+    var style = {
+      font: "16px Arial",
+      fill: "#000",
+      align: "center"
+    };
+    this.scoreText = this.game.add.text(10, 10, '', style);
+    this.updateScore();
   },
 
   addPoint: function() {
+    // Set up RNG
+    var seed = Date.now();
+    this.random = new Phaser.RandomDataGenerator([seed]);
 
     var widthPoints = this.width/16;
     var heightPoints = this.height/16;
-    var x = Math.round(Math.random()*(widthPoints-1))*16;
-    var y = Math.round(Math.random()*(heightPoints-1))*16;
-
-    if(!this.point) {
-        this.point = this.add.sprite(this.world.centerX, this.world.centerY, 'balls');
-      }
-
-    this.point.x = x;
-    this.point.y = y;
+    var x = this.random.integerInRange(0, 800);
+    var y = this.random.integerInRange(0, 600);
+    point = this.add.sprite(x, y, 'balls');
+    this.game.physics.arcade.enable(point);
   },
 
-  increaseLength: function() {
-    var x = 160;
-    var y = 160;
-
-    if(this.player.length != 0) {
-      x = this.player[this.player.length-1].x + 16;
-      y = this.player[this.player.length-1].y + 16;
-    }
-
-    var ball = this.add.sprite(x, y, 'line-segment');
-    this.physics.arcade.enable(ball);
-
-    this.player.push(ball);
+  updateScore: function() {
+    this.scoreText.setText('SCORE: ' + this.score);
   },
 
   isColliding: function(a, b) {
-    if(a.body.hitTest(b.x, b.y)) {
-      return true;
-    }
-    return false;
+    point.kill();
+    this.addPoint();
+    this.score++;
+    this.updateScore();
   },
 
   update: function () {
-
-    // if(this.isColliding(this.player[0], this.point)) {
-    //   this.increaseLength();
-    //   this.addPoint();
-    // }
-
+    // Initial velocity 0
     snakeHead.body.velocity.setTo(0, 0);
     snakeHead.body.angularVelocity = 0;
+
+    this.game.physics.arcade.overlap(snakeHead, point, this.isColliding, null, this);
 
     if (cursors.up.isDown)
     {
@@ -117,9 +115,6 @@ level5.prototype = {
         snakeHead.body.angularVelocity = 300;
     }
 
-  },
-
-  render: function () {
   },
 
   nextLevel: function(){

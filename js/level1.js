@@ -97,9 +97,14 @@ level1.prototype = {
 
     },
 
-    damageLine: function () {
+    damageLine: function (line, enemy) {
+      enemy.kill();
       this.score--;
       this.updateScore();
+    },
+
+    nextLevel: function(){
+      this.game.state.start("level2");
     },
 
     update: function () {
@@ -135,10 +140,5 @@ level1.prototype = {
     render: function () {
         this.game.debug.spriteInfo(line1, 32, 32);
         this.game.debug.spriteInfo(line2, 32, 600-32);
-      },
-
-    nextLevel: function(){
-      this.track.stop();
-      this.game.state.start("level2");
-    }
+      }
 }
