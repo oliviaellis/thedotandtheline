@@ -22,6 +22,7 @@ level3.prototype = {
       // Set up audio
         this.track = this.game.add.audio('level3', 1, false);
         this.track.play();
+        this.track.onStop.add(this.nextLevel, this);
     },
 
     checkOverlap: function(spriteA, spriteB) {

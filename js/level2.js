@@ -37,7 +37,6 @@ level2.prototype = {
     // Configure enemies
       this.enemies = this.game.add.group();
       this.enemies.enableBody = true;
-      this.enemies.body.setSize(25, 25);
       this.initEnemies();
       this.timer = this.game.time.events.loop(500, this.addEnemy, this);
 
@@ -48,6 +47,7 @@ level2.prototype = {
     // Set up audio
       this.track = this.game.add.audio('level2', 1, false);
       this.track.play();
+      this.track.onStop.add(this.nextLevel, this);
   },
 
   updateScore: function() {
@@ -60,6 +60,7 @@ level2.prototype = {
           var sprite = this.enemies.create(800, 100, 'dot', null, false);
           this.game.physics.arcade.enable(sprite);
           sprite.enableBody = true;
+          sprite.body.setSize(25, 25);
           sprite.body.velocity.x = -300;
       }
   },

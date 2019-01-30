@@ -17,6 +17,7 @@ menuState.prototype = {
     this.game.time.events.add(Phaser.Timer.SECOND, this.makeText, this);
   },
 
+
   makeText: function() {
     this.text1 = this.game.add.text(this.game.width / 2, 100, "The Dot and the Line");
     this.text1.fill = "#EBDE47";

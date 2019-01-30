@@ -56,9 +56,7 @@ level1.prototype = {
       // Set up audio
         this.track = this.game.add.audio('level1', 1, false);
         this.track.play();
-        this.game.input.onDown.addOnce(() => {
-         this.game.sound.context.resume();
-        });
+        this.track.onStop.add(this.nextLevel, this);
     },
 
     startAnimation: function () {

@@ -44,6 +44,7 @@ level5.prototype = {
     // Set up audio
     this.track = this.game.add.audio('level5', 1, false);
     this.track.play();
+    this.track.onStop.add(this.nextLevel, this);
 
     this.score = 0;
     var style = {
@@ -118,7 +119,6 @@ level5.prototype = {
   },
 
   nextLevel: function(){
-    this.track.stop();
     this.game.state.start("level6");
   }
 }
