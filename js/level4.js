@@ -19,7 +19,7 @@ level4.prototype = {
   create: function () {
     this.cursors = this.game.input.keyboard.createCursorKeys();
     var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-    wkey.onDown.addOnce(this.nextLevel, this);
+    wkey.onDown.addOnce(this.skipLevel, this);
     this.point = null;
     this.addPoint();
     this.player = [];
@@ -37,9 +37,9 @@ level4.prototype = {
     this.updateScore();
 
     // Set up audio
-      this.track = this.game.add.audio('level4', 1, false);
-      this.track.play();
-      this.track.onStop.add(this.nextLevel, this);
+      audio4 = this.game.add.audio('level4', 1, false);
+      audio4.play();
+      audio4.onStop.add(this.nextLevel, this);
   },
 
   addPoint: function() {
@@ -60,13 +60,12 @@ level4.prototype = {
     var x = 160;
     var y = 160;
     if(this.player.length != 0) {
-      x = this.player[this.player.length-1].x + 20;
-      y = this.player[this.player.length-1].y + 20;
+      x = this.player[this.player.length-1].x + 50;
+      y = this.player[this.player.length-1].y + 50;
     }
     var segment = this.game.add.sprite(x, y, 'line-segment');
     this.game.physics.arcade.enable(segment);
     segment.anchor.setTo(0.5, 0.5);
-
 
     this.player.push(segment);
 
@@ -100,7 +99,7 @@ level4.prototype = {
     }
   },
 
-  isColliding: function(a, b) {
+  getPoint: function(a, b) {
     this.increaseLength();
     this.addPoint();
     this.score++;
@@ -114,7 +113,7 @@ level4.prototype = {
   update: function () {
     this.updateMovementPosition();
 
-    this.game.physics.arcade.overlap(this.player[0], this.point, this.isColliding, null, this);
+    this.game.physics.arcade.overlap(this.player[0], this.point, this.getPoint, null, this);
 
     var oldX, oldY;
     for(var i = 0; i < this.player.length; i++) {
@@ -149,6 +148,11 @@ level4.prototype = {
   },
 
   nextLevel: function(){
+    this.game.state.start("level5");
+  },
+
+  skipLevel: function(){
+    audio4.stop();
     this.game.state.start("level5");
   }
 }

@@ -41,7 +41,7 @@ level1.prototype = {
       // Manual next stage key
         cursors = this.game.input.keyboard.createCursorKeys();
         var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-        wkey.onDown.addOnce(this.nextLevel, this);
+        wkey.onDown.add(this.skipLevel, this);
 
       // Configure enemies
         this.enemies = this.game.add.group();
@@ -54,9 +54,9 @@ level1.prototype = {
         this.random = new Phaser.RandomDataGenerator([seed]);
 
       // Set up audio
-        this.track = this.game.add.audio('level1', 1, false);
-        this.track.play();
-        this.track.onStop.add(this.nextLevel, this);
+        audio1 = this.game.add.audio('level1', 1, false);
+        audio1.play();
+        audio1.onStop.add(this.nextLevel, this);
     },
 
     startAnimation: function () {
@@ -106,6 +106,11 @@ level1.prototype = {
       this.game.state.start("level2");
     },
 
+    skipLevel: function(){
+      audio1.stop();
+      this.game.state.start("level2");
+    },
+
     update: function () {
 
       line1.body.velocity.x = 0;
@@ -134,10 +139,5 @@ level1.prototype = {
       this.game.physics.arcade.overlap(line1, this.enemies, this.damageLine, null, this);
       this.game.physics.arcade.overlap(line2, this.enemies, this.damageLine, null, this);
 
-    },
-
-    render: function () {
-        this.game.debug.spriteInfo(line1, 32, 32);
-        this.game.debug.spriteInfo(line2, 32, 600-32);
-      }
+    }
 }

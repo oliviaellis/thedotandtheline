@@ -1,4 +1,5 @@
 var level3 = function(game){
+  sceneCount = 0;
 }
 
 level3.prototype = {
@@ -7,7 +8,7 @@ level3.prototype = {
       // Manual next stage key
         cursors = this.game.input.keyboard.createCursorKeys();
         var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-        wkey.onDown.addOnce(this.nextLevel, this);
+        wkey.onDown.addOnce(this.skipLevel, this);
         this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         bg = this.game.add.sprite(0,0, 'daredevil');
@@ -20,22 +21,16 @@ level3.prototype = {
         line.body.bounce.set(1);
 
       // Set up audio
-        this.track = this.game.add.audio('level3', 1, false);
-        this.track.play();
-        this.track.onStop.add(this.nextLevel, this);
+        audio3 = this.game.add.audio('level3', 1, false);
+        audio3.play();
+        audio3.onStop.add(this.nextLevel, this);
     },
 
     checkOverlap: function(spriteA, spriteB) {
-      console.log('Checking overlap');
-      if (line.body.velocity.y = 0) {
-        var boundsA = spriteA.getBounds();
-        var boundsB = spriteB.getBounds();
+      var boundsA = spriteA.getBounds();
+      var boundsB = spriteB.getBounds();
 
-        var overlap = Phaser.Rectangle.intersects(boundsA, boundsB);
-        if (overlap) {
-          nextScene();
-        }
-      }
+      return Phaser.Rectangle.intersects(boundsA, boundsB);
     },
 
     update: function () {
@@ -48,25 +43,28 @@ level3.prototype = {
       }
 
       if (this.spacebar.isDown) {
-        if (line.body.velocity.y = 0) {
-          line.body.velocity.y = speed;
-        } else {
           line.body.velocity.y = 0;
-        }
       }
 
-      this.game.physics.arcade.overlap(line, target, this.checkOverlap, null, this);
+      this.spacebar.onDown.add(function () { this.checkOverlap(line, target);}, this);
+
+
     },
 
     nextScene: function() {
-      console.log('Nice dude, it works');
+      sceneCount += 1;
+      bg = this.game.add.sprite(0, 0, sceneCount+".png");
     },
 
     render: function () {
     },
 
     nextLevel: function(){
-      this.track.stop();
+      this.game.state.start("level4");
+    },
+
+    skipLevel: function(){
+      audio3.stop();
       this.game.state.start("level4");
     }
   }

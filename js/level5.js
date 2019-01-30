@@ -14,7 +14,7 @@ level5.prototype = {
     // Next level shortcut for development
     cursors = this.game.input.keyboard.createCursorKeys();
     var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-    wkey.onDown.addOnce(this.nextLevel, this);
+    wkey.onDown.addOnce(this.skipLevel, this);
 
     // Configure snake
     snakeHead = this.game.add.sprite(400, 300, 'line-segment');
@@ -41,10 +41,14 @@ level5.prototype = {
     point = null;
     this.addPoint();
 
+    this.enemies = this.game.add.group();
+    this.enemies.enableBody = true;
+    this.timer = this.game.time.events.loop(3000, this.addEnemy, this);
+
     // Set up audio
-    this.track = this.game.add.audio('level5', 1, false);
-    this.track.play();
-    this.track.onStop.add(this.nextLevel, this);
+    audio5 = this.game.add.audio('level5', 1, false);
+    audio5.play();
+    audio5.onStop.add(this.nextLevel, this);
 
     this.score = 0;
     var style = {
@@ -69,14 +73,32 @@ level5.prototype = {
     this.game.physics.arcade.enable(point);
   },
 
+    addEnemy: function(){
+      var x = this.random.integerInRange(50, 750);
+      var y = this.random.integerInRange(50, 550);
+      var sframe = this.random.integerInRange(0, 4);
+      var sprite = this.enemies.create(x, y, 'squiggle');
+      sprite.frame = sframe;
+      this.game.physics.arcade.enable(sprite);
+      sprite.enableBody = true;
+      sprite.body.immovable = true;
+      sprite.body.setSize(50, 50);
+
+    },
+
   updateScore: function() {
     this.scoreText.setText('SCORE: ' + this.score);
   },
 
-  isColliding: function(a, b) {
+  getPoint: function(a, b) {
     point.kill();
     this.addPoint();
     this.score++;
+    this.updateScore();
+  },
+
+  isColliding: function() {
+    this.score--;
     this.updateScore();
   },
 
@@ -85,7 +107,8 @@ level5.prototype = {
     snakeHead.body.velocity.setTo(0, 0);
     snakeHead.body.angularVelocity = 0;
 
-    this.game.physics.arcade.overlap(snakeHead, point, this.isColliding, null, this);
+    this.game.physics.arcade.overlap(snakeHead, point, this.getPoint, null, this);
+    this.game.physics.arcade.collide(snakeHead, this.enemies, this.isColliding, null, this);
 
     if (cursors.up.isDown)
     {
@@ -119,6 +142,11 @@ level5.prototype = {
   },
 
   nextLevel: function(){
+    this.game.state.start("level6");
+  },
+
+  skipLevel: function(){
+    audio5.stop();
     this.game.state.start("level6");
   }
 }

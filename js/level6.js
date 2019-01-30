@@ -16,7 +16,7 @@ level6.prototype = {
       // Next level shortcut for development
       cursors = this.game.input.keyboard.createCursorKeys();
       var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-      wkey.onDown.addOnce(this.nextLevel, this);
+      wkey.onDown.addOnce(this.skipLevel, this);
 
       // Create squiggle
       squiggle = this.game.add.sprite(100, 100, 'squiggle');
@@ -60,9 +60,9 @@ level6.prototype = {
       this.updateScore();
 
       // Set up audio
-      this.track = this.game.add.audio('level6', 1, false);
-      this.track.play();
-      this.track.onStop.add(this.nextLevel, this);
+      audio6 = this.game.add.audio('level6', 1, false);
+      audio6.play();
+      audio6.onStop.add(this.nextLevel, this);
     },
 
     updateScore: function() {
@@ -76,7 +76,7 @@ level6.prototype = {
       squiggle.y = y;
       this.score++;
       this.updateScore();
-      squiggleScale--;
+      squiggleScale -= 0.1;
       squiggle.scale.setTo(squiggleScale);
     },
 
@@ -122,10 +122,17 @@ level6.prototype = {
 
     },
 
-    nextLevel: function(){
+    nextLevel: function() {
+        this.game.add.tween(squiggle).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+        this.game.add.tween(snakeSection).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+        this.game.state.start("win");
+    },
+
+    skipLevel: function(){
+      audio6.stop();
       this.game.state.start("win");
     },
 
     render: function () {
-    },
+    }
   }
