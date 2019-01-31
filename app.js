@@ -4,6 +4,7 @@ const port = process.env.PORT || 3000;
 app.set('views', './views');
 app.set('view engine', 'ejs');
 app.use(express.static('assets'));
+//
 
 app.get('/', (req, res) => {
   res.render('main.ejs');
