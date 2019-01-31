@@ -1,6 +1,5 @@
 var level1 = function(game){
-  this.score = 0;
-  this.scoreText = null;
+
 }
 
 level1.prototype = {
@@ -16,8 +15,6 @@ level1.prototype = {
         this.game.add.tween(bg).to({alpha: 0}, 1000, "Linear", true);
       // create Dot sprite
         dot = this.game.add.sprite(this.game.width/2, this.game.height/2, 'dot');
-        dot.anchor.setTo(0.5, 0.5);
-        this.game.physics.arcade.enable(dot);
         this.game.time.events.add(Phaser.Timer.SECOND, this.startAnimation, this);
 
       // create Line sprite
@@ -28,20 +25,10 @@ level1.prototype = {
         line1.body.setSize(20, 300);
         line2.body.setSize(20, 300);
 
-      // Set up score
-        this.score = 0;
-        var style = {
-          font: "16px Arial",
-          fill: "#000",
-          align: "center"
-        };
-        this.scoreText = this.game.add.text(10, 10, '', style);
-        this.updateScore();
-
       // Manual next stage key
         cursors = this.game.input.keyboard.createCursorKeys();
         var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-        wkey.onDown.addOnce(this.nextLevel, this);
+        wkey.onDown.add(this.skipLevel, this);
 
       // Configure enemies
         this.enemies = this.game.add.group();
@@ -54,9 +41,9 @@ level1.prototype = {
         this.random = new Phaser.RandomDataGenerator([seed]);
 
       // Set up audio
-        this.track = this.game.add.audio('level1', 1, false);
-        this.track.play();
-        this.track.onStop.add(this.nextLevel, this);
+        audio1 = this.game.add.audio('level1', 1, false);
+        audio1.play();
+        audio1.onStop.add(this.nextLevel, this);
     },
 
     startAnimation: function () {
@@ -87,8 +74,6 @@ level1.prototype = {
             var y = this.random.integerInRange(10, this.game.world.height - 10);
             enemy.reset(800, y);
             enemy.body.velocity.x = this.random.integerInRange(-200, -500);
-            this.score++;
-            this.updateScore();
           // Kill enemies when they exit screen
             enemy.checkWorldBounds = true;
             enemy.outOfBoundsKill = true;
@@ -98,16 +83,18 @@ level1.prototype = {
 
     damageLine: function (line, enemy) {
       enemy.kill();
-      this.score--;
-      this.updateScore();
     },
 
     nextLevel: function(){
-      this.game.state.start("level2");
+      this.game.state.start("level2", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+    },
+
+    skipLevel: function(){
+      audio1.stop();
+      this.game.state.start("level2", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     },
 
     update: function () {
-
       line1.body.velocity.x = 0;
       line2.body.velocity.x = 0;
 
@@ -134,10 +121,5 @@ level1.prototype = {
       this.game.physics.arcade.overlap(line1, this.enemies, this.damageLine, null, this);
       this.game.physics.arcade.overlap(line2, this.enemies, this.damageLine, null, this);
 
-    },
-
-    render: function () {
-        this.game.debug.spriteInfo(line1, 32, 32);
-        this.game.debug.spriteInfo(line2, 32, 600-32);
-      }
+    }
 }

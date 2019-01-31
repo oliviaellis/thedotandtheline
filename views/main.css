@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Lora');
+
+body {
+  background-color: #336cb2;
+  font-family: 'Lora', serif;
+}
+
+h1 {
+  color: #f6d740;
+  font-size: 3rem;
+  text-align: center;
+}
+
+div#dotandline {
+  margin-left: 20%;
+}
