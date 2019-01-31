@@ -10,13 +10,14 @@ loadState.prototype = {
     this.game.load.image('balls', 'assets/balls.png');
     this.game.load.image('whiteball', 'assets/whiteball.png');
     this.game.load.image('line-segment', 'assets/line-segment.png');
+    this.game.load.image('full-line', 'assets/full-line.png');
     this.game.load.image('dot', 'assets/dot.png');
     this.game.load.image('background', 'assets/background.png');
     this.game.load.image('black-bg', 'assets/blackbg.png');
     this.game.load.image('target', 'assets/target.png');
     this.game.load.image('affairs', 'assets/affairs.png');
     this.game.load.image('art', 'assets/art.png');
-    this.game.load.image('1', 'assets/enforcement.png');
+    this.game.load.image('enforcement', 'assets/enforcement.png');
     this.game.load.image('daredevil', 'assets/daredevil.png');
     this.game.load.image('sportsman', 'assets/sportsman.png');
 

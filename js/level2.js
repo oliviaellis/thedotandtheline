@@ -90,12 +90,12 @@ level2.prototype = {
   },
 
   nextLevel: function(){
-    this.game.state.start("level3");
+    this.game.state.start("level3a", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
   },
 
   skipLevel: function(){
     audio2.stop();
-    this.game.state.start("level3");
+    this.game.state.start("level3a", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
   },
 
   update: function () {

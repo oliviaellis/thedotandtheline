@@ -3,7 +3,7 @@ var level4 = function(game){
   this.currentMovement = 2;
   this.player = null;
   this.point = null;
-  this.speed = 4;
+  this.speed = 0;
   this.score = 0;
   this.scoreText = null;
   this.movement = {
@@ -40,6 +40,8 @@ level4.prototype = {
       audio4 = this.game.add.audio('level4', 1, false);
       audio4.play();
       audio4.onStop.add(this.nextLevel, this);
+
+      this.timer = this.game.time.events.loop(5000, this.increaseSpeed, this);
   },
 
   addPoint: function() {
@@ -71,6 +73,12 @@ level4.prototype = {
 
     this.player[0].body.collideWorldBounds = true;
     this.player[0].body.setSize(25, 25);
+  },
+
+  increaseSpeed: function() {
+    if (this.speed < 6) {
+      this.speed++;
+    }
   },
 
   updateMovementPosition: function() {
@@ -148,11 +156,11 @@ level4.prototype = {
   },
 
   nextLevel: function(){
-    this.game.state.start("level5");
+    this.game.state.start("level5", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
   },
 
   skipLevel: function(){
     audio4.stop();
-    this.game.state.start("level5");
+    this.game.state.start("level5", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
   }
 }

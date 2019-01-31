@@ -123,14 +123,12 @@ level6.prototype = {
     },
 
     nextLevel: function() {
-        this.game.add.tween(squiggle).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-        this.game.add.tween(snakeSection).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-        this.game.state.start("win");
+        this.game.state.start("win", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     },
 
     skipLevel: function(){
       audio6.stop();
-      this.game.state.start("win");
+      this.game.state.start("win", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     },
 
     render: function () {

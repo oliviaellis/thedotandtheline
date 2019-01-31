@@ -142,12 +142,12 @@ level5.prototype = {
   },
 
   nextLevel: function(){
-    this.game.state.start("level6");
+    this.game.state.start("level6", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
   },
 
   skipLevel: function(){
     audio5.stop();
-    this.game.state.start("level6");
+    this.game.state.start("level6", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
   }
 }
 

@@ -27,6 +27,6 @@ menuState.prototype = {
 
 	startGame: function() {
     this.track.stop();
-		this.game.state.start("level1", EnteringTransition);
+		this.game.state.start("level1");
 	}
 }

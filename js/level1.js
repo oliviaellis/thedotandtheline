@@ -16,8 +16,6 @@ level1.prototype = {
         this.game.add.tween(bg).to({alpha: 0}, 1000, "Linear", true);
       // create Dot sprite
         dot = this.game.add.sprite(this.game.width/2, this.game.height/2, 'dot');
-        dot.anchor.setTo(0.5, 0.5);
-        this.game.physics.arcade.enable(dot);
         this.game.time.events.add(Phaser.Timer.SECOND, this.startAnimation, this);
 
       // create Line sprite
@@ -103,12 +101,12 @@ level1.prototype = {
     },
 
     nextLevel: function(){
-      this.game.state.start("level2");
+      this.game.state.start("level2", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     },
 
     skipLevel: function(){
       audio1.stop();
-      this.game.state.start("level2");
+      this.game.state.start("level2", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     },
 
     update: function () {
