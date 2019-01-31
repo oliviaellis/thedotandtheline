@@ -6,6 +6,7 @@ loadState.prototype = {
     this.game.load.image('line2', 'images/line.png');
     this.game.load.image('whiteline', 'images/whiteline.png');
     this.game.load.image('sideline', 'images/sideline.png');
+    this.game.load.image('full-line', 'images/full-line.png');
     this.game.load.image('balls', 'images/balls.png');
     this.game.load.image('whiteball', 'images/whiteball.png');
     this.game.load.image('line-segment', 'images/line-segment.png');
@@ -23,7 +24,11 @@ loadState.prototype = {
     this.game.load.audio('intro', 'audio/intro.mp3');
     this.game.load.audio('level1', 'audio/level1.mp3');
     this.game.load.audio('level2', 'audio/level2.mp3');
-    this.game.load.audio('level3', 'audio/level3.mp3');
+    this.game.load.audio('3a', 'audio/3a.mp3');
+    this.game.load.audio('3b', 'audio/3b.mp3');
+    this.game.load.audio('3c', 'audio/3c.mp3');
+    this.game.load.audio('3d', 'audio/3d.mp3');
+    this.game.load.audio('3e', 'audio/3e.mp3');
     this.game.load.audio('level4', 'audio/level4.mp3');
     this.game.load.audio('level5', 'audio/level5.mp3');
     this.game.load.audio('level6', 'audio/boss.mp3');

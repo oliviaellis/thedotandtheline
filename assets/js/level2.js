@@ -1,4 +1,6 @@
 var level2 = function(game){
+  this.score = 0;
+  this.scoreText = null;
 }
 
 level2.prototype = {
@@ -35,6 +37,16 @@ level2.prototype = {
       var seed = Date.now();
       this.random = new Phaser.RandomDataGenerator([seed]);
 
+    // Set up scoring
+      this.score = 0;
+      var style = {
+        font: "16px Arial",
+        fill: "#FFF",
+        align: "center"
+      };
+      this.scoreText = this.game.add.text(10, 10, '', style);
+      this.updateScore();
+
     // Set up audio
       audio2 = this.game.add.audio('level2', 1, false);
       audio2.play();
@@ -65,6 +77,8 @@ level2.prototype = {
           var y = this.random.integerInRange(10, this.game.world.height - 10);
           enemy.reset(800, y);
           enemy.body.velocity.x = this.random.integerInRange(-200, -500);
+          this.score++;
+          this.updateScore();
         // Kill enemies when they exit screen
           enemy.checkWorldBounds = true;
           enemy.outOfBoundsKill = true;
@@ -74,6 +88,8 @@ level2.prototype = {
 
   damageLine: function (line, enemy) {
     enemy.kill();
+    this.score--;
+    this.updateScore();
   },
 
   nextLevel: function(){

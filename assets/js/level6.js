@@ -6,6 +6,8 @@ var level6 = function(game){
   squiggleScale = 4;
   var seed = Date.now();
   this.random = new Phaser.RandomDataGenerator([seed]);
+  this.score = 0;
+  this.scoreText = null;
 }
 
 level6.prototype = {
@@ -64,6 +66,8 @@ level6.prototype = {
       squiggle.y = y;
       squiggleScale -= 0.1;
       squiggle.scale.setTo(squiggleScale);
+      this.score += 20;
+      // this.updateScore();
     },
 
     update: function () {
@@ -115,8 +119,5 @@ level6.prototype = {
     skipLevel: function(){
       audio6.stop();
       this.game.state.start("win", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
-    },
-
-    render: function () {
     }
   }

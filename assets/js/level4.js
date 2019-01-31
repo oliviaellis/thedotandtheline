@@ -4,6 +4,8 @@ var level4 = function(game){
   this.player = null;
   this.point = null;
   this.speed = 0;
+  this.score = 0;
+  this.scoreText = null;
   this.movement = {
     'UP' : 1,
     'RIGHT' : 2,
@@ -32,6 +34,16 @@ level4.prototype = {
       audio4.onStop.add(this.nextLevel, this);
 
       this.timer = this.game.time.events.loop(5000, this.increaseSpeed, this);
+
+    // Set up scoring
+      this.score = 0;
+      var style = {
+        font: "16px Arial",
+        fill: "#000",
+        align: "center"
+      };
+      this.scoreText = this.game.add.text(10, 10, '', style);
+      this.updateScore();
   },
 
   addPoint: function() {
@@ -100,6 +112,8 @@ level4.prototype = {
   getPoint: function(a, b) {
     this.increaseLength();
     this.addPoint();
+    this.score += 10;
+    this.updateScore();
   },
 
   updateScore: function() {
