@@ -20,19 +20,10 @@ level2.prototype = {
       line1.body.setSize(20, 300);
       line2.body.setSize(20, 300);
 
-      this.score = 0;
-      var style = {
-        font: "16px Arial",
-        fill: "#fff",
-        align: "center"
-      };
-      this.scoreText = this.game.add.text(10, 10, '', style);
-      this.updateScore();
-
     // Manual next stage key
       cursors = this.game.input.keyboard.createCursorKeys();
       var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-      wkey.onDown.addOnce(this.nextLevel, this);
+      wkey.onDown.addOnce(this.skipLevel, this);
 
     // Configure enemies
       this.enemies = this.game.add.group();
@@ -45,9 +36,9 @@ level2.prototype = {
       this.random = new Phaser.RandomDataGenerator([seed]);
 
     // Set up audio
-      this.track = this.game.add.audio('level2', 1, false);
-      this.track.play();
-      this.track.onStop.add(this.nextLevel, this);
+      audio2 = this.game.add.audio('level2', 1, false);
+      audio2.play();
+      audio2.onStop.add(this.nextLevel, this);
   },
 
   updateScore: function() {
@@ -74,8 +65,6 @@ level2.prototype = {
           var y = this.random.integerInRange(10, this.game.world.height - 10);
           enemy.reset(800, y);
           enemy.body.velocity.x = this.random.integerInRange(-200, -500);
-          this.score++;
-          this.updateScore();
         // Kill enemies when they exit screen
           enemy.checkWorldBounds = true;
           enemy.outOfBoundsKill = true;
@@ -85,12 +74,15 @@ level2.prototype = {
 
   damageLine: function (line, enemy) {
     enemy.kill();
-    this.score--;
-    this.updateScore();
   },
 
   nextLevel: function(){
-    this.game.state.start("level3");
+    this.game.state.start("level3a", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+  },
+
+  skipLevel: function(){
+    audio2.stop();
+    this.game.state.start("level3a", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
   },
 
   update: function () {
@@ -121,10 +113,5 @@ level2.prototype = {
     this.game.physics.arcade.overlap(line1, this.enemies, this.damageLine, null, this);
     this.game.physics.arcade.overlap(line2, this.enemies, this.damageLine, null, this);
 
-  },
-
-  render: function () {
-      this.game.debug.spriteInfo(line1, 32, 32);
-      this.game.debug.spriteInfo(line2, 32, 600-32);
-    }
+  }
   }

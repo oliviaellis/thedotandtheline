@@ -4,8 +4,6 @@ var level6 = function(game){
   numSnakeSections = 30; //number of snake body sections
   snakeSpacer = 4; //parameter that sets the spacing between sections
   squiggleScale = 4;
-  this.score = 0;
-  this.scoreText = null;
   var seed = Date.now();
   this.random = new Phaser.RandomDataGenerator([seed]);
 }
@@ -16,7 +14,7 @@ level6.prototype = {
       // Next level shortcut for development
       cursors = this.game.input.keyboard.createCursorKeys();
       var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-      wkey.onDown.addOnce(this.nextLevel, this);
+      wkey.onDown.addOnce(this.skipLevel, this);
 
       // Create squiggle
       squiggle = this.game.add.sprite(100, 100, 'squiggle');
@@ -49,20 +47,10 @@ level6.prototype = {
       {
           snakePath[i] = new Phaser.Point(400, 300);
       }
-
-      this.score = 0;
-      var style = {
-        font: "16px Arial",
-        fill: "#000",
-        align: "center"
-      };
-      this.scoreText = this.game.add.text(10, 10, '', style);
-      this.updateScore();
-
       // Set up audio
-      this.track = this.game.add.audio('level6', 1, false);
-      this.track.play();
-      this.track.onStop.add(this.nextLevel, this);
+      audio6 = this.game.add.audio('level6', 1, false);
+      audio6.play();
+      audio6.onStop.add(this.nextLevel, this);
     },
 
     updateScore: function() {
@@ -74,9 +62,7 @@ level6.prototype = {
       var y = this.random.integerInRange(0, 600);
       squiggle.x = x;
       squiggle.y = y;
-      this.score++;
-      this.updateScore();
-      squiggleScale--;
+      squiggleScale -= 0.1;
       squiggle.scale.setTo(squiggleScale);
     },
 
@@ -122,10 +108,15 @@ level6.prototype = {
 
     },
 
-    nextLevel: function(){
-      this.game.state.start("win");
+    nextLevel: function() {
+        this.game.state.start("win", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+    },
+
+    skipLevel: function(){
+      audio6.stop();
+      this.game.state.start("win", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     },
 
     render: function () {
-    },
+    }
   }
