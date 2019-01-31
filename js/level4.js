@@ -4,8 +4,6 @@ var level4 = function(game){
   this.player = null;
   this.point = null;
   this.speed = 0;
-  this.score = 0;
-  this.scoreText = null;
   this.movement = {
     'UP' : 1,
     'RIGHT' : 2,
@@ -27,14 +25,6 @@ level4.prototype = {
     for(var i = 0; i < 4; i++) {
       this.increaseLength();
     }
-    this.score = 0;
-    var style = {
-      font: "16px Arial",
-      fill: "#000",
-      align: "center"
-    };
-    this.scoreText = this.game.add.text(10, 10, '', style);
-    this.updateScore();
 
     // Set up audio
       audio4 = this.game.add.audio('level4', 1, false);
@@ -110,8 +100,6 @@ level4.prototype = {
   getPoint: function(a, b) {
     this.increaseLength();
     this.addPoint();
-    this.score++;
-    this.updateScore();
   },
 
   updateScore: function() {

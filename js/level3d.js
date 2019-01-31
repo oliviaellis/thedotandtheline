@@ -13,13 +13,13 @@ level3d.prototype = {
         bg = this.game.add.sprite(0,0, 'art');
 
       // Set up audio
-        audio3 = this.game.add.audio('level3', 1, false);
+        audio3 = this.game.add.audio('3d', 1, false);
         audio3.play();
 
         line = this.game.add.sprite(0, 580, 'full-line');
         this.game.physics.arcade.enable(line);
 
-        target = this.game.add.sprite(100, 50, 'line-segment');
+        target = this.game.add.sprite(80, -20, 'target');
         this.game.physics.arcade.enable(target);
     },
 
@@ -32,25 +32,40 @@ level3d.prototype = {
         line.body.velocity.x = -300;
       }
 
-      this.spacebar.onDown.add(this.deploy, this);
-      this.game.physics.arcade.overlap(line, target, this.nextLevel, null, this);
+      if (line.y == 0) {
+        line.body.velocity.y = 300;
+      }
+      if (line.y >= 600) {
+        line.x == 580;
+        line.body.velocity.y = 0;
+        line.body.velocity.x = 300;
+      }
 
+      this.spacebar.onDown.add(this.deploy, this);
+      this.game.physics.arcade.overlap(line, target, this.checkLine, null, this);
+      audio3.onStop.add(this.checkAudio, this);
+
+      if (this.isChecked && this.audioStopped) {
+        this.game.state.start("level3e", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+      }
     },
 
     deploy: function() {
       line.body.velocity.x = 0;
       line.body.velocity.y = -300;
-      if (line.y == 0) {
-        line.body.velocity.y = 0;
-      }
     },
 
-    nextLevel: function(){
-      this.game.state.start("level3e", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+    checkLine: function() {
+      line.body.velocity.y = 0;
+      this.isChecked = true;
+    },
+
+    checkAudio: function() {
+      this.audioStopped = true;
     },
 
     skipLevel: function(){
       audio3.stop();
-      this.game.state.start("level4", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+      this.game.state.start("level3e", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     }
   }

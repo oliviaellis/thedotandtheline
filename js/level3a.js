@@ -1,4 +1,6 @@
 var level3a = function(game){
+  this.isChecked = false;
+  this.audioStopped = false;
 }
 
 level3a.prototype = {
@@ -13,15 +15,15 @@ level3a.prototype = {
         bg = this.game.add.sprite(0,0, 'daredevil');
 
       // Set up audio
-        audio3 = this.game.add.audio('level3', 1, false);
+        audio3 = this.game.add.audio('3a', 1, false);
         audio3.play();
-        audio3.onStop.add(this.nextLevel, this);
 
         line = this.game.add.sprite(-750, 0, 'sideline');
         this.game.physics.arcade.enable(line);
 
-        target = this.game.add.sprite(780, 300, 'line-segment');
+        target = this.game.add.sprite(800, 275, 'target');
         this.game.physics.arcade.enable(target);
+
     },
 
     update: function () {
@@ -33,25 +35,40 @@ level3a.prototype = {
         line.body.velocity.y = -300;
       }
 
-      this.spacebar.onDown.add(this.deploy, this);
-      this.game.physics.arcade.overlap(line, target, this.nextLevel, null, this);
+      if (line.x == 0) {
+        line.body.velocity.x = -300;
+      }
+      if (line.x == -780) {
+        line.x == -770;
+        line.body.velocity.x = 0;
+        line.body.velocity.y = 300;
+      }
 
+      this.spacebar.onDown.add(this.deploy, this);
+      this.game.physics.arcade.overlap(line, target, this.checkLine, null, this);
+      audio3.onStop.add(this.checkAudio, this);
+
+      if (this.isChecked && this.audioStopped) {
+        this.game.state.start("level3b", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+      }
     },
 
     deploy: function() {
       line.body.velocity.y = 0;
       line.body.velocity.x = 300;
-      if (line.x == 0) {
-        line.body.velocity.x = 0;
-      }
     },
 
-    nextLevel: function(){
-      this.game.state.start("level3b", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+    checkLine: function() {
+      line.body.velocity.x = 0;
+      this.isChecked = true;
+    },
+
+    checkAudio: function() {
+      this.audioStopped = true;
     },
 
     skipLevel: function(){
       audio3.stop();
-      this.game.state.start("level4", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+      this.game.state.start("level3b", Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     }
   }

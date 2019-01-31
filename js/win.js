@@ -17,7 +17,7 @@ winState.prototype = {
 
       tweenA.chain(tweenB);
 
-      this.game.time.events.add(Phaser.Timer.SECOND, this.fade, this);
+      this.game.time.events.add(3000, this.fade, this);
       this.game.camera.onFadeComplete.add(this.resetFade, this);
     },
 
@@ -30,7 +30,7 @@ winState.prototype = {
 
 
     fade: function() {
-      this.game.camera.fade(0x000000, 4000);
+      this.game.camera.fade(0x000000, 6000);
       this.makeText();
     },
 

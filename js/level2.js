@@ -20,15 +20,6 @@ level2.prototype = {
       line1.body.setSize(20, 300);
       line2.body.setSize(20, 300);
 
-      this.score = 0;
-      var style = {
-        font: "16px Arial",
-        fill: "#fff",
-        align: "center"
-      };
-      this.scoreText = this.game.add.text(10, 10, '', style);
-      this.updateScore();
-
     // Manual next stage key
       cursors = this.game.input.keyboard.createCursorKeys();
       var wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -74,8 +65,6 @@ level2.prototype = {
           var y = this.random.integerInRange(10, this.game.world.height - 10);
           enemy.reset(800, y);
           enemy.body.velocity.x = this.random.integerInRange(-200, -500);
-          this.score++;
-          this.updateScore();
         // Kill enemies when they exit screen
           enemy.checkWorldBounds = true;
           enemy.outOfBoundsKill = true;
@@ -85,8 +74,6 @@ level2.prototype = {
 
   damageLine: function (line, enemy) {
     enemy.kill();
-    this.score--;
-    this.updateScore();
   },
 
   nextLevel: function(){

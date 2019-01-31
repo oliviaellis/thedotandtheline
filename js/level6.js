@@ -4,8 +4,6 @@ var level6 = function(game){
   numSnakeSections = 30; //number of snake body sections
   snakeSpacer = 4; //parameter that sets the spacing between sections
   squiggleScale = 4;
-  this.score = 0;
-  this.scoreText = null;
   var seed = Date.now();
   this.random = new Phaser.RandomDataGenerator([seed]);
 }
@@ -49,16 +47,6 @@ level6.prototype = {
       {
           snakePath[i] = new Phaser.Point(400, 300);
       }
-
-      this.score = 0;
-      var style = {
-        font: "16px Arial",
-        fill: "#000",
-        align: "center"
-      };
-      this.scoreText = this.game.add.text(10, 10, '', style);
-      this.updateScore();
-
       // Set up audio
       audio6 = this.game.add.audio('level6', 1, false);
       audio6.play();
@@ -74,8 +62,6 @@ level6.prototype = {
       var y = this.random.integerInRange(0, 600);
       squiggle.x = x;
       squiggle.y = y;
-      this.score++;
-      this.updateScore();
       squiggleScale -= 0.1;
       squiggle.scale.setTo(squiggleScale);
     },

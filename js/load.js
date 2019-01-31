@@ -26,7 +26,11 @@ loadState.prototype = {
     this.game.load.audio('intro', 'assets/audio/intro.mp3');
     this.game.load.audio('level1', 'assets/audio/level1.mp3');
     this.game.load.audio('level2', 'assets/audio/level2.mp3');
-    this.game.load.audio('level3', 'assets/audio/level3.mp3');
+    this.game.load.audio('3a', 'assets/audio/3a.mp3');
+    this.game.load.audio('3b', 'assets/audio/3b.mp3');
+    this.game.load.audio('3c', 'assets/audio/3c.mp3');
+    this.game.load.audio('3d', 'assets/audio/3d.mp3');
+    this.game.load.audio('3e', 'assets/audio/3e.mp3');
     this.game.load.audio('level4', 'assets/audio/level4.mp3');
     this.game.load.audio('level5', 'assets/audio/level5.mp3');
     this.game.load.audio('level6', 'assets/audio/boss.mp3');

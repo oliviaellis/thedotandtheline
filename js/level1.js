@@ -1,6 +1,5 @@
 var level1 = function(game){
-  this.score = 0;
-  this.scoreText = null;
+
 }
 
 level1.prototype = {
@@ -25,16 +24,6 @@ level1.prototype = {
         this.game.physics.arcade.enable(line2);
         line1.body.setSize(20, 300);
         line2.body.setSize(20, 300);
-
-      // Set up score
-        this.score = 0;
-        var style = {
-          font: "16px Arial",
-          fill: "#000",
-          align: "center"
-        };
-        this.scoreText = this.game.add.text(10, 10, '', style);
-        this.updateScore();
 
       // Manual next stage key
         cursors = this.game.input.keyboard.createCursorKeys();
@@ -85,8 +74,6 @@ level1.prototype = {
             var y = this.random.integerInRange(10, this.game.world.height - 10);
             enemy.reset(800, y);
             enemy.body.velocity.x = this.random.integerInRange(-200, -500);
-            this.score++;
-            this.updateScore();
           // Kill enemies when they exit screen
             enemy.checkWorldBounds = true;
             enemy.outOfBoundsKill = true;
@@ -96,8 +83,6 @@ level1.prototype = {
 
     damageLine: function (line, enemy) {
       enemy.kill();
-      this.score--;
-      this.updateScore();
     },
 
     nextLevel: function(){
@@ -110,7 +95,6 @@ level1.prototype = {
     },
 
     update: function () {
-
       line1.body.velocity.x = 0;
       line2.body.velocity.x = 0;
 

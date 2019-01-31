@@ -4,8 +4,6 @@ var level5 = function(game){
   numSnakeSections = 30; //number of snake body sections
   snakeSpacer = 4; //parameter that sets the spacing between sections
   point = null;
-  this.score = 0;
-  this.scoreText = null;
 }
 
 level5.prototype = {
@@ -49,15 +47,6 @@ level5.prototype = {
     audio5 = this.game.add.audio('level5', 1, false);
     audio5.play();
     audio5.onStop.add(this.nextLevel, this);
-
-    this.score = 0;
-    var style = {
-      font: "16px Arial",
-      fill: "#000",
-      align: "center"
-    };
-    this.scoreText = this.game.add.text(10, 10, '', style);
-    this.updateScore();
   },
 
   addPoint: function() {
@@ -93,13 +82,9 @@ level5.prototype = {
   getPoint: function(a, b) {
     point.kill();
     this.addPoint();
-    this.score++;
-    this.updateScore();
   },
 
   isColliding: function() {
-    this.score--;
-    this.updateScore();
   },
 
   update: function () {
